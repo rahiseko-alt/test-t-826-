@@ -1,0 +1,89 @@
+# ---------------------------------------------------------------------------
+# acceptance.yml — 受入検査の CI 雛形
+#
+# 設置先: 案件リポジトリの .github/workflows/acceptance.yml
+# 設計の正: docs/discussions/D-20260825-18-test-layer-design.md
+#
+# 1つのジョブで、次の順に実行する。
+#   1. check-test-integrity  検査を弱める差分が無いか
+#   2. check-catastrophic    破滅的な脆弱性が無いか (4種)
+#   3. e2e                   受入検査 (1回のブラウザ起動に束ねた6段)
+#
+# 順序には理由がある。検査そのものが無効化されていれば、
+# その後に走る e2e が緑でも意味を持たない。安いものから先に落とす。
+#
+# 必須検査として設定する名前は、このファイルのジョブ名 `acceptance` である。
+# 手順は templates/e2e/README.md に書いた (この環境では未検証)。
+# ---------------------------------------------------------------------------
+
+name: acceptance
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: acceptance-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  acceptance:
+    name: acceptance
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      # 転写: 案件の値に置き換える
+      BASE_URL: http://localhost:3000
+      SPEC_PATH: spec.md
+      HOOK_SEED: '20260825'
+      UI_HOOK_COUNT: '5'
+      API_HOOK_COUNT: '300'
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          # check-test-integrity は BASE との差分を数える。浅い clone では
+          # BASE に到達できないため、履歴を全部取る。
+          fetch-depth: 0
+
+      - name: setup-node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: check-test-integrity
+        run: |
+          set -eu
+          BASE_REF="${{ github.base_ref }}"
+          if [ -z "$BASE_REF" ]; then
+            BASE_REF="${{ github.event.repository.default_branch }}"
+          fi
+          git fetch --no-tags --quiet origin "$BASE_REF":"refs/remotes/origin/$BASE_REF" || true
+          scripts/check-test-integrity.sh "origin/$BASE_REF"
+
+      - name: check-catastrophic
+        run: |
+          set -eu
+          scripts/check-catastrophic.sh "$SPEC_PATH"
+
+      - name: e2e
+        run: |
+          set -eu
+          npm ci
+          npx playwright install --with-deps chromium
+          # 転写: 検査対象を起動する手順。BASE_URL が応答するまで待つ。
+          # npm run start &
+          # npx wait-on "$BASE_URL"
+          npx playwright test e2e/acceptance.spec.ts
+
+      - name: upload-report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+          if-no-files-found: ignore
