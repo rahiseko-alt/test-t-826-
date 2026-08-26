@@ -51,12 +51,12 @@ AIコーディングエージェント（Claude Code / Codex / Antigravity）の
 ## 2. 現在の状態 (Current State)
 
 `spec.md` は**ドラフト**です。**門①（`prompts/intent-backtranslator.md`）が未実施のため、まだ確定していません。**
-門①は作業した当のAI以外が、`spec.md` だけを読んで実行する必要があります。次にこれを回し、戻ってきた1文を利用者に「そう／違う」の二択で見せます。
+門①は作業した当のAI以外が、`spec.md` だけを読んで実行する必要があります。次にこれを回し、戻ってきた1文を利用者に Yes / No の二択で見せます。
 
 門②（`prompts/drift-detector.md` の7問）も、`project-intake` 追加分の差分に対して未実施です。
 
 ## 3. 次回やること (Next Steps)
 
-1. 門①を回す（別AIに `spec.md` だけを読ませ、1文に戻させる）→ 利用者に二択で提示 → 「そう」なら spec 確定
+1. 門①を回す（別AIに `spec.md` だけを読ませ、1文に戻させる）→ 利用者に Yes / No で提示 → Yes なら spec 確定
 2. 第2節の検収条件3件を `templates/e2e/acceptance.spec.ts` の `[転写1]`〜`[転写3]` へ転写する
 3. 実装（画面 → 一式の組み立て → フォルダ書き出し → 上書きの停止）
