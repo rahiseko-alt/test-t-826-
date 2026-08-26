@@ -257,6 +257,7 @@ EXPLORE  -->  BUILD  -->  VERIFY
 
 #### D-1. この案件のゴールは `spec.md` 1枚で固定する (Acceptance-First)
 - 着手時に [`spec.md`](./spec.md) を埋め、門①で二択1回だけ確認して確定する。手順は [`project-spec` スキル](./.agents/skills/project-spec/SKILL.md)。spec が固定するのは**検収の下限であって期待値の上限ではない**。期待値が動いたら第1〜4節を更新する。
+- 依頼文がまだ無い状態で始まった場合だけ、[`project-intake` スキル](./.agents/skills/project-intake/SKILL.md) で1回尋ねてから上に入る。尋ねるのは1案件に1回で、状態報告より先に置く。
 - **第2節の検収条件がそのまま E2E のハッピーパスになる**（[`templates/e2e/`](./templates/e2e/README.md)）。検査は [`scripts/check-test-integrity.sh`](./scripts/check-test-integrity.sh) と [`scripts/check-catastrophic.sh`](./scripts/check-catastrophic.sh)。CI 雛形は [`templates/ci/acceptance.yml`](./templates/ci/acceptance.yml)。
 
 #### D-2. コミュニケーション規約 (Communication Protocol) — 永続指示

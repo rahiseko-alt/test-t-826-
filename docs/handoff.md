@@ -27,14 +27,22 @@
 
 ## 1. 今回やったこと (Completed in this session)
 
-*(未着手)*
+- セッション開始プロトコル（`session-checkin`）を実行。`spec.md` が雛形のままで依頼文がどこにも無いことを確認した。
+- 依頼文が無い状態で1回だけ利用者に尋ねる手順を [`project-intake` スキル](../.agents/skills/project-intake/SKILL.md) として追加した（文言そのものを含む）。
+- 上の追加に伴い、`session-checkin` 手順4・`AGENTS.md` D-1・`README.md` から `project-intake` を参照するようにした。
+- 初回の質問が「毎回聞かれるのか」と受け取られた件を `docs/failures.md` に F-20260826-01 として記録した。
+- `scripts/check-test-integrity.sh origin/main` と `scripts/check-catastrophic.sh` はいずれも PASS。
 
 ## 2. 現在の状態 (Current State)
 
-*(未着手。`spec.md` が未記入であれば、最初にやるのは `project-spec` スキルによる spec の確定です)*
+**`spec.md` は未記入のままです。この案件で何を作るかは、まだ決まっていません。**
+上記は「作るものを尋ねる手順」を整えただけであり、納品物は1つも増えていません（AGENTS.md 避けるべき未来1位に該当しうる差分のため、ここで止めています）。
+
+門②（`prompts/drift-detector.md` の7問）は今回の差分に対して未実施です。実行者は作業した当のAI以外である必要があります。
 
 ## 3. 次回やること (Next Steps)
 
-1. `spec.md` を埋め、門①で確定させる（`project-spec` スキル）
-2. 第2節の検収条件を `templates/e2e/` の雛形へ転写する
-3. 実装
+1. 利用者から「何を作るか」を受け取る（`project-intake` スキルの文言をそのまま使う。既に受け取っている場合はこの手順を飛ばす）
+2. `spec.md` を埋め、門①で二択1回だけ確認して確定させる（`project-spec` スキル）
+3. 第2節の検収条件を `templates/e2e/` の雛形へ転写する
+4. 実装
