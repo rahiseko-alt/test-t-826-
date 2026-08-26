@@ -28,7 +28,9 @@
 ## 1. 今回やったこと (Completed in this session)
 
 - セッション開始プロトコル（`session-checkin`）を実行。`spec.md` が雛形のままで依頼文がどこにも無いことを確認した。
-- 依頼文が無い状態で1回だけ利用者に尋ねる手順を [`project-intake` スキル](../.agents/skills/project-intake/SKILL.md) として追加した（文言そのものを含む）。
+- 依頼文が無い状態で利用者に尋ねる手順を [`project-intake` スキル](../.agents/skills/project-intake/SKILL.md) として追加した（文言そのものを含む）。
+- 文言をコンシェルジュの口調に書き直した。初稿が機械的だったため、日本語UXライティング（書き言葉→話し言葉）と会話UIの blank page problem を調べたうえで作り直し、根拠を「書くときの5点」として残した。
+- 埋まらない箇所は**まとめて1回だけ**聞き返す方針にした（文言で「足りないところはお尋ねします」と約束するため）。細切れの往復と、案を並べて選ばせることは引き続き禁止。
 - 上の追加に伴い、`session-checkin` 手順4・`AGENTS.md` D-1・`README.md` から `project-intake` を参照するようにした。
 - 初回の質問が「毎回聞かれるのか」と受け取られた件を `docs/failures.md` に F-20260826-01 として記録した。
 - `scripts/check-test-integrity.sh origin/main` と `scripts/check-catastrophic.sh` はいずれも PASS。
