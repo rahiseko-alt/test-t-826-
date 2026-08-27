@@ -12,3 +12,7 @@ test-results/
 # npm
 node_modules/
 dist/
+
+# 作業用のスクリーンショット
+s*.png
+shot.mjs
