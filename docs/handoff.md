@@ -12,7 +12,8 @@
 **この案件の依頼者は非エンジニアです。コードを1行も読めません。** 次の担当は Claude とは限りません（Codex / Antigravity も同じリポジトリを触ります）。
 
 ### 禁止事項
-0. **【最優先】相手が読んで分かるかを、発言前に必ず自問する。** 長さは問わない。形式へのこだわりを、伝わることより優先しない（AGENTS.md D-2）。
+0. **【最優先】途中経過を実況しない。** 説明は「問題がある」かつ「承認が無いと進めない」の両方を満たすときだけ。必要なのは結果だけである（AGENTS.md D-2）。
+0b. **【最優先】相手が読んで分かるかを、発言前に必ず自問する。** 長さは問わない。形式へのこだわりを、伝わることより優先しない（AGENTS.md D-2）。
 1. **エンジニア向け語彙で話さない。** 技術用語は使うが、必要なら定義を添える（AGENTS.md D-2）。
 2. **変更範囲をユーザーに技術用語で指定させない。**
 3. **技術的な選択肢を並べて選ばせない**（評価にコード知識が要るため）。
@@ -67,6 +68,16 @@ Gate 2（`prompts/drift-detector.md` の7問）も、`project-intake` 追加分�
 
 ## 3. 次回やること (Next Steps)
 
-1. Gate 1を回す（別AIに `spec.md` だけを読ませ、1文に戻させる）→ 利用者に Yes / No で提示 → Yes なら spec 確定
-2. 第2節の検収条件3件を `templates/e2e/acceptance.spec.ts` の `[転写1]`〜`[転写3]` へ転写する
-3. 実装（画面 → 一式の組み立て → フォルダ書き出し → 上書きの停止）
+1. `dist/shitaku-kit.tar.gz` を配布先へ置き、`index.html` の `KIT_URL` を実際のURLへ差し替える（`KIT_SHA256` は `scripts/build-kit.sh` が自動で埋める。手で書かない）
+2. `index.html` を配布先へ置く
+3. A群（A-1〜A-7）を Claude Code / Codex / Antigravity の3つで1回ずつ実際に確かめる
+4. Gate 2（`prompts/drift-detector.md` の7問）を別AIで回す
+
+### リリース手順
+
+    bash scripts/build-kit.sh     # 一式を作り、照合用の値を index.html へ埋める
+    npx playwright test           # B群
+    bash scripts/check-catastrophic.sh
+    bash scripts/check-test-integrity.sh origin/main
+
+`build-kit.sh` は同じ中身なら毎回同じ値を返す。値が変わったら中身が変わったということ。
