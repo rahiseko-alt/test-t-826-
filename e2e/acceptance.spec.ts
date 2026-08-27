@@ -343,7 +343,7 @@ test.describe.serial('受入検査（1回のブラウザ起動に束ねる）', 
     // [転写2] spec.md 第2節 B-1 When — 作りたいものを数行書いて「用意する」を押す
     const dl1 = page.waitForEvent('download');
     await page.getByLabel('作りたいもの').fill(WISH_1);
-    await page.getByRole('button', { name: '用意する' }).click();
+    await page.getByRole('button', { name: '確定' }).click();
     download1 = await dl1;
     // [転写2 ここまで]
 
@@ -357,7 +357,7 @@ test.describe.serial('受入検査（1回のブラウザ起動に束ねる）', 
     expect(body1).toMatch(/空のフォルダ/);                // 空のフォルダで始めさせる指示
     expect(body1).toMatch(/verify-install\.sh/);         // 置けたか確かめる手順
     expect(body1).toMatch(/飛ばして/);                    // その手順を飛ばさせない指示
-    await expect(page.getByText('次にAIへこう言ってください')).toBeVisible();
+    await expect(page.getByText('AIのチャット欄に貼り付けてください')).toBeVisible();
     await expect(page.getByRole('button', { name: 'コピー' })).toBeVisible();
     // [転写3 ここまで]
   });
@@ -375,7 +375,7 @@ test.describe.serial('受入検査（1回のブラウザ起動に束ねる）', 
         // 内部エラーが画面に出ないことだけである。
         await page.goto('/');
         await page.getByLabel('作りたいもの').fill(value);
-        await page.getByRole('button', { name: '用意する' }).click();
+        await page.getByRole('button', { name: '確定' }).click();
         // [転写4 ここまで]
 
         const html = await page.content();
@@ -432,7 +432,7 @@ test.describe.serial('受入検査（1回のブラウザ起動に束ねる）', 
       await page.goto('/');
       const dl2 = page.waitForEvent('download');
       await page.getByLabel('作りたいもの').fill(WISH_2);
-      await page.getByRole('button', { name: '用意する' }).click();
+      await page.getByRole('button', { name: '確定' }).click();
       const download2 = await dl2;
       const body2 = await readDownload(download2);
       expect(body2).toContain(WISH_2);
