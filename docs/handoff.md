@@ -78,6 +78,16 @@ Gate 2（`prompts/drift-detector.md` の7問）も、`project-intake` 追加分�
 3. A群（A-1〜A-7）を Claude Code / Codex / Antigravity の3つで1回ずつ実際に確かめる
 4. Gate 2（`prompts/drift-detector.md` の7問）を別AIで回す
 
+### A群の実地確認 — どこまで済んだか
+
+| エージェント | 状況 |
+|---|---|
+| **Codex** | 一部確認済み。A-4（3択＋自由文）／A-7（次を明示）／A-8（既存ファイルを潰さない）／Gate 1（逆翻訳と言い直し）が実地で通った。**`verify-install.sh` の出力は未確認。** A-1/A-2/A-3/A-5/A-6 も未確認 |
+| **Claude Code** | 未実施 |
+| **Antigravity** | 未実施 |
+
+「どれか1つで動いた」では済ませない（AGENTS.md 避けるべき未来5位）。3つすべてで1回ずつ確かめてから出荷完了とする。
+
 ### リリース手順
 
     bash scripts/build-kit.sh     # 一式を作り、照合用の値を index.html へ埋める
