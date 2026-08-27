@@ -33,12 +33,12 @@
 4. **検知 ≠ 変更。** 検知の後に、コスト・影響を含む検討があり、**「変更しない」も正当な結論**である。両者が分離しているから、検知の敷居を下げても変更は増えない。**だから1件で発火してよい。**
 5. **検知を握りつぶさない。** 検討の結果として却下することはできるが、検知そのものを立てないことは許されない。却下は記録に残す。
 
-**門は2つ。全エージェントが必ず通す。**
+**Gate は2つ。全エージェントが必ず通す。**
 着手前 = [`prompts/intent-backtranslator.md`](./prompts/intent-backtranslator.md)（別AIが詳細指示だけを盲目で読み1文に戻す）。
-**門①を回す時点は「新しいゴールを決めるとき」に1回だけ。セッション開始（チェックイン）では回さない。** ゴールは1案件につき最初に1回決める。
-門①が読む「詳細指示」＝この案件の [`spec.md`](./spec.md)。作り方は [`project-spec` スキル](./.agents/skills/project-spec/SKILL.md)（D-1）。
+**Gate 1を回す時点は「新しいゴールを決めるとき」に1回だけ。セッション開始（チェックイン）では回さない。** ゴールは1案件につき最初に1回決める。
+Gate 1が読む「詳細指示」＝この案件の [`spec.md`](./spec.md)。作り方は [`project-spec` スキル](./.agents/skills/project-spec/SKILL.md)（D-1）。
 完了時 = [`prompts/drift-detector.md`](./prompts/drift-detector.md)（別AIが7問に はい/いいえ）。**作業した当のAIには実行させない。**
-**門②を回す時点は「変更が出来上がった直後・同じセッションの中」。セッション終了（チェックアウト）では回さない。** 検知が出たらそのセッション内で直す。
+**Gate 2を回す時点は「変更が出来上がった直後・同じセッションの中」。セッション終了（チェックアウト）では回さない。** 検知が出たらそのセッション内で直す。
 
 ### 避けるべき未来（致命的な順に5つ）
 
@@ -147,7 +147,7 @@ EXPLORE  -->  BUILD  -->  VERIFY
 
 # LEVEL C — RISK-BASED WORKFLOW (リスク別ワークフロー)
 
-**工程の背骨は冒頭の3本柱（門①＝新しいゴールを決めるとき1回 / 常時掲示ゴール / 門②＝変更が出来上がった直後）である。** 本 LEVEL C の5ステップ（EXPLORE / FAILURE MATCH / BUILD / INDEPENDENT CRITIC / REAL VERIFICATION）は3本柱に並ぶ別系統ではなく、**STRICT と判定された変更にのみ適用する詳細工程**である。FAST では標準 Harness（`EXPLORE` → `BUILD` → `VERIFY`）と3本柱で足り、STEP 2 / STEP 4 / STEP 5 は起動しない。両者が食い違う場合は3本柱が優先する。
+**工程の背骨は冒頭の3本柱（Gate 1＝新しいゴールを決めるとき1回 / 常時掲示ゴール / Gate 2＝変更が出来上がった直後）である。** 本 LEVEL C の5ステップ（EXPLORE / FAILURE MATCH / BUILD / INDEPENDENT CRITIC / REAL VERIFICATION）は3本柱に並ぶ別系統ではなく、**STRICT と判定された変更にのみ適用する詳細工程**である。FAST では標準 Harness（`EXPLORE` → `BUILD` → `VERIFY`）と3本柱で足り、STEP 2 / STEP 4 / STEP 5 は起動しない。両者が食い違う場合は3本柱が優先する。
 
 ## 1. 判定軸は FAST / STRICT の1本 (Mode Judgement)
 
@@ -256,7 +256,7 @@ EXPLORE  -->  BUILD  -->  VERIFY
 ### [プロジェクト固有ルール一覧]
 
 #### D-1. この案件のゴールは `spec.md` 1枚で固定する (Acceptance-First)
-- 着手時に [`spec.md`](./spec.md) を埋め、門①で二択1回だけ確認して確定する。手順は [`project-spec` スキル](./.agents/skills/project-spec/SKILL.md)。spec が固定するのは**検収の下限であって期待値の上限ではない**。期待値が動いたら第1〜4節を更新する。
+- 着手時に [`spec.md`](./spec.md) を埋め、Gate 1で二択1回だけ確認して確定する。手順は [`project-spec` スキル](./.agents/skills/project-spec/SKILL.md)。spec が固定するのは**検収の下限であって期待値の上限ではない**。期待値が動いたら第1〜4節を更新する。
 - 依頼文がまだ無い状態で始まった場合だけ、[`project-intake` スキル](./.agents/skills/project-intake/SKILL.md) で1回尋ねてから上に入る。尋ねるのは1案件に1回で、状態報告より先に置く。
 - **第2節の検収条件がそのまま E2E のハッピーパスになる**（[`templates/e2e/`](./templates/e2e/README.md)）。検査は [`scripts/check-test-integrity.sh`](./scripts/check-test-integrity.sh) と [`scripts/check-catastrophic.sh`](./scripts/check-catastrophic.sh)。CI 雛形は [`templates/ci/acceptance.yml`](./templates/ci/acceptance.yml)。
 
@@ -264,7 +264,8 @@ EXPLORE  -->  BUILD  -->  VERIFY
 - **丁寧な言葉遣いを標準とする。** 断定的・命令的・ぶっきらぼうな口調を用いない。
 - **比喩・たとえ話・回りくどい言い換えを禁止する。** 技術的な事象は**技術用語のまま、正確に**記述し、必要なら定義を添える。
 - 曖昧な要約で誤魔化さず、事実・推測・提案を明確に区別して述べる。
-- **説明・解説は3行以内に収める。** 背景・理由・経緯を並べない。結論と、次にやることだけを書く。長い説明は、読む手間を案件数だけ増やす。
+- **【最優先】発言する前に、必ず自分に問う。** 「この書き方は、相手が読んで分かるか」「AIの都合で書いていないか」。分からない書き方は、正しくても意味がない。**長さは問わない。3文字でも1万文字でも、伝わればよい。**
+- **形式・手順・体裁へのこだわりを、伝わることより優先しない。** 「1文で」「3行で」「N項目で」といった形の縛りに合わせるために、内容を歪めたり、同じやりとりを繰り返させたりしない。相手が分かった時点でその話は終わりである。
 - **利用者に二者択一を求めるときは、必ず「〜でよろしいですか？」と「Yes/No」の2行で終える。** 「そう／違う」等に言い換えない。答え方が毎回変わると、利用者は何と答えればよいかを毎回考えることになる。
 
 #### D-3. 失敗の記録 (Failure Log)
