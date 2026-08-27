@@ -254,7 +254,7 @@
     <div class="marker">1</div>
     <div class="body">
       <h2>作りたいことを書く</h2>
-      <p class="lede">誰が使って、その人のどんな手間が減るとうれしいか。それだけで足ります。</p>
+      <p class="lede">誰が使って、その人の何が良くなるとうれしいか。それだけで足ります。<br>減らしたいこと、増やしたいこと、まだ無いもの。どれでもかまいません。</p>
 
       <div class="field">
         <label for="wish">作りたいもの</label>
@@ -264,8 +264,9 @@
 
       <div class="examples">
         <span class="cap">例を入れる</span>
-        <button class="chip" type="button" data-fill="うちの美容室の予約を、電話じゃなくてネットで受けたい。今は営業中に電話が鳴って手が止まる。">予約をネットで受けたい</button>
-        <button class="chip" type="button" data-fill="店長が月末にやっている売上の集計を、画面でぱっと終わらせたい。今はレシートを見ながら電卓を叩いている。">売上の集計を楽にしたい</button>
+        <button class="chip" type="button" data-fill="うちの美容室の予約を、電話じゃなくてネットで受けたい。今は営業中に電話が鳴って手が止まる。">手間を減らしたい</button>
+        <button class="chip" type="button" data-fill="作った器の写真を並べて、気に入った人がそのまま問い合わせできるページがほしい。今は見てもらう場所が無い。">見てもらいたい</button>
+        <button class="chip" type="button" data-fill="シフト表を作るときに、人数が足りない日を自動で赤く出したい。今は目で数えていて、たまに見落とす。">間違いを無くしたい</button>
       </div>
 
       <p id="err" class="alert" role="alert">何を作りたいか、数行書いてください。</p>
@@ -299,7 +300,7 @@
   'use strict';
 
   var KIT_URL = 'https://rahiseko-alt.github.io/test-t-826-/kit/shitaku-kit.tar.gz';
-  var KIT_SHA256 = '46043d473a776239e132fd586af3e9583a9345a6e9e0adc5cf0f55b94343eb4e';
+  var KIT_SHA256 = '1654267c86a10b44fdbd9c0fe22faf9b94667cadd0952c67bdd688a7c8750ff6';
 
   var wish = document.getElementById('wish');
   var err = document.getElementById('err');
