@@ -73,17 +73,26 @@ Gate 2（`prompts/drift-detector.md` の7問）も、`project-intake` 追加分�
 
 ## 3. 次回やること (Next Steps)
 
-1. `dist/shitaku-kit.tar.gz` を配布先へ置き、`index.html` の `KIT_URL` を実際のURLへ差し替える（`KIT_SHA256` は `scripts/build-kit.sh` が自動で埋める。手で書かない）
-2. `index.html` を配布先へ置く
-3. A群（A-1〜A-7）を Claude Code / Codex / Antigravity の3つで1回ずつ実際に確かめる
-4. Gate 2（`prompts/drift-detector.md` の7問）を別AIで回す
+1. ~~`dist/shitaku-kit.tar.gz` と `index.html` を配布先へ置く~~ → 済。GitHub Pages
+   （https://rahiseko-alt.github.io/test-t-826-/ ）へ自動公開されている
+2. A群（A-1〜A-8）を Claude Code / Codex / Antigravity の3つで1回ずつ実際に確かめる
+3. Gate 2（`prompts/drift-detector.md` の7問）を別AIで回す
+
+### 公開物の通し確認（2026-08-27 実施）
+
+公開中の画面から一式を取得し、指示書の手順0〜4を人手でそのままなぞった。取得 →
+照合（ハッシュ一致）→ 展開 → `verify-install.sh` まで通った。この確認で A-5 の
+赤と、検査の抜け穴が1つずつ見つかっている（F-20260827-07 / F-20260827-08）。
+
+**B群の自動テストは「届き方」しか見ない。届いたあとに何が起きるかは、実際に
+なぞらないと出ない。** 次のリリースでも同じ通し確認を必ず入れること。
 
 ### A群の実地確認 — どこまで済んだか
 
 | エージェント | 状況 |
 |---|---|
 | **Codex** | 一部確認済み。A-4（3択＋自由文）／A-7（次を明示）／A-8（既存ファイルを潰さない）／Gate 1（逆翻訳と言い直し）が実地で通った。**`verify-install.sh` の出力は未確認。** A-1/A-2/A-3/A-5/A-6 も未確認 |
-| **Claude Code** | 未実施 |
+| **Claude Code** | 未実施。ただし A-5（1行目が判定になっているか）は公開物の通し確認で見つけて直した。開発を実際に頼む形での A-1〜A-4 / A-6〜A-8 は未実施 |
 | **Antigravity** | 未実施 |
 
 「どれか1つで動いた」では済ませない（AGENTS.md 避けるべき未来5位）。3つすべてで1回ずつ確かめてから出荷完了とする。
