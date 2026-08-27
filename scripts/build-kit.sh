@@ -104,6 +104,18 @@ if ! grep -q "var KIT_SHA256 = '" "$INDEX"; then
   echo "要対応: index.html に KIT_SHA256 の行が見つかりません。" >&2
   exit 1
 fi
+
+# 一式の一番上に置かれる名前を、現物から拾って画面へ埋める。
+# 画面はこの一覧を使い、展開の前に同じ名前のものが無いことを確かめさせる（A-8）。
+# 手で書くと、一式に足したものが一覧から漏れ、そのファイルだけ黙って上書きされる。
+if ! grep -q "var KIT_TOP = '" "$INDEX"; then
+  echo "要対応: index.html に KIT_TOP の行が見つかりません。" >&2
+  exit 1
+fi
+TOP="$( cd "$K" && ls -A | LC_ALL=C sort | tr '\n' ' ' | sed 's/ *$//' )"
+TMPT="$STAGE/index.top.html"
+sed "s|var KIT_TOP = '[^']*';|var KIT_TOP = '$TOP';|" "$INDEX" > "$TMPT"
+cp "$TMPT" "$INDEX"
 TMP="$STAGE/index.html"
 sed "s/var KIT_SHA256 = '[0-9a-f]\{64\}';/var KIT_SHA256 = '$SUM';/" "$INDEX" > "$TMP"
 cp "$TMP" "$INDEX"
