@@ -93,7 +93,7 @@
     </div>
     <div class="say">
       <h2>次にAIへこう言ってください</h2>
-      <p id="say">いま落とした「shitaku.md」を読んで、書いてあるとおりに進めてください。</p>
+      <p id="say">新しい空のフォルダを作って、そこで作業してください。いま落とした「shitaku.md」を読んで、書いてあるとおりに進めてください。</p>
       <div class="foot"><button class="btn ghost" id="copy" type="button">コピー</button></div>
     </div>
     <div class="row"><button class="btn ghost" id="again" type="button">もう一度つくる</button></div>
@@ -111,7 +111,7 @@
   // 取得物と一緒に届く値ではない（spec.md 第3節）。
   // ---------------------------------------------------------------------
   var KIT_URL = 'https://rahiseko-alt.github.io/test-t-826-/kit/shitaku-kit.tar.gz';
-  var KIT_SHA256 = 'daa7ed24e3e3171fb9fce502ef815e49a69d3ce42e78f95f1ca19572e885ca73';
+  var KIT_SHA256 = '8b73112a05c27d728da64938a743dbe726a4d18160b44b88fd87a7987124c91c';
 
   var wish = document.getElementById('wish');
   var err = document.getElementById('err');
@@ -130,6 +130,18 @@
       text,
       '',
       '## 手順',
+      '',
+      '### 0. 新しい空のフォルダを作り、その中で作業する',
+      '',
+      '**すでに何か入っているフォルダの中で始めてはいけません。**',
+      'この一式は、案件1つにつきフォルダ1つで使います。既存のフォルダで始めると、',
+      '同じ名前のファイルとぶつかり、そこで止まることになります。',
+      '',
+      '    mkdir shitaku-project && cd shitaku-project',
+      '',
+      'すでに何かが入っているフォルダで始めてしまった場合は、',
+      '**利用者に「新しい空のフォルダを作ってやり直してよいか」を確認してください。**',
+      '既存のファイルには触れないこと。',
       '',
       '### 1. 一式を取得する',
       '',
