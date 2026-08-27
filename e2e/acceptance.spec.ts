@@ -354,6 +354,10 @@ test.describe.serial('受入検査（1回のブラウザ起動に束ねる）', 
     expect(body1).toMatch(/取得/);                       // 一式を取得する手順
     expect(body1).toMatch(/[0-9a-f]{64}/);              // 照合に使う正解のハッシュ値
     expect(body1).toMatch(/上書き/);                     // 上書きを禁じる指示
+    // 上書きの禁止を、文だけで終わらせていないこと（spec.md 第2節 A-8）。
+    // 素の tar は同じ名前のものを黙って潰すため、展開の前に確かめる手が要る。
+    expect(body1).toMatch(/CONFLICT=\$\(for f in /);      // 展開前に同じ名前のものを調べる
+    expect(body1).toMatch(/同じ名前のものが既にあります/);   // ぶつかったときに出す判定
     expect(body1).toMatch(/空のフォルダ/);                // 空のフォルダで始めさせる指示
     expect(body1).toMatch(/verify-install\.sh/);         // 置けたか確かめる手順
     expect(body1).toMatch(/飛ばして/);                    // その手順を飛ばさせない指示
