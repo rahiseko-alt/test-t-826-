@@ -362,6 +362,9 @@
 
   var KIT_URL = 'https://rahiseko-alt.github.io/test-t-826-/kit/shitaku-kit.tar.gz';
   var KIT_SHA256 = '1654267c86a10b44fdbd9c0fe22faf9b94667cadd0952c67bdd688a7c8750ff6';
+  // 一式の一番上に置かれる名前の一覧。scripts/build-kit.sh が現物から埋める。
+  // 展開の前に、同じ名前のものが無いことを機械的に確かめるために使う（spec.md 第2節 A-8）。
+  var KIT_TOP = '.agents AGENTS.md CLAUDE.md docs prompts scripts spec.md templates はじめに.txt';
 
   var wish = document.getElementById('wish');
   var err = document.getElementById('err');
@@ -421,10 +424,21 @@
       '',
       '### 3. 展開する',
       '',
-      '    tar -xzf shitaku-kit.tar.gz',
+      '**`tar -xzf` を単体で実行してはいけません。**',
+      'tar は同じ名前のものがあっても、何も言わずに上書きします。',
+      '上書きしてよいかどうかを、あなたの注意力に任せません。下をそのまま実行してください。',
       '',
-      '**展開先に同じ名前のファイルやフォルダが既にある場合、上書きしてはいけません。**',
-      'その場で止めて、利用者に確認してください。既存のものを消すことも変えることもしません。',
+      '    CONFLICT=$(for f in ' + KIT_TOP + '; do [ -e "$f" ] && echo "  - $f"; done)',
+      '    if [ -n "$CONFLICT" ]; then',
+      '      echo "要対応"; echo',
+      '      echo "同じ名前のものが既にあります。上書きしないため、展開していません。"',
+      '      echo "$CONFLICT"',
+      '    else',
+      '      tar -xzf shitaku-kit.tar.gz && echo "問題なし"',
+      '    fi',
+      '',
+      '**「要対応」が出たら、そこで止めて利用者に確認してください。**',
+      '既存のものを消すことも変えることもしません。手順0に戻り、新しい空のフォルダでやり直します。',
       '',
       '### 4. 正しく置けたか確かめる（飛ばしてはいけません）',
       '',
