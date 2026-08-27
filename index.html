@@ -6,14 +6,18 @@
 <title>初期ヒアリング</title>
 <!-- 外部への依存を持たない。ネットが制限されたパソコンでもそのまま開ける。 -->
 <style>
+  /* 余白は 4 の倍数だけを使う（4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 / 96）。
+     半端な値を1つ混ぜると、そこから先は目分量になる。 */
   :root{
     --ground:#FFFFFF;
     --surface:#F5F6F4;
     --ink:#0F1417;
-    --ink-2:#59636A;
-    --ink-3:#8E979D;
+    --ink-2:#59636A;       /* 本文に使ってよい薄い色。白地で 6.1:1 */
+    --ink-muted:#6B7378;   /* 「今は使えない」ときの文字色。白地で 4.8:1 */
+    --ink-3:#8E979D;       /* 罫線・飾り専用。文字には使わない */
     --line:#E3E6E2;
     --line-strong:#C9CFC9;
+    --field-line:#8B9490;  /* 入力欄の枠。白地で 3.1:1（部品の境界の下限） */
     --accent:#0D5C55;
     --accent-hover:#0A4A45;
     --accent-soft:#E7F0EE;
@@ -29,9 +33,11 @@
       --surface:#171B1E;
       --ink:#ECEFED;
       --ink-2:#A2ABB0;
+      --ink-muted:#79838A;
       --ink-3:#79838A;
       --line:#262C30;
       --line-strong:#39434A;
+      --field-line:#616C73;
       --accent:#5FBFB0;
       --accent-hover:#7ACFC1;
       --accent-soft:#13302D;
@@ -53,7 +59,7 @@
     -webkit-font-smoothing:antialiased;
   }
 
-  h1,h2,p,label,.note,.lede,.kicker{
+  h1,h2,p,label,.note,.lede,.kicker,.cap{
     word-break:auto-phrase;
     overflow-wrap:anywhere;
   }
@@ -63,29 +69,32 @@
   .page{
     max-width:680px;
     margin:0 auto;
-    padding:clamp(48px,9vw,104px) clamp(20px,5vw,32px) 120px;
+    padding:clamp(48px,9vw,96px) clamp(20px,5vw,32px) clamp(56px,10vw,96px);
   }
 
-  /* ---------- header ---------- */
-  .masthead{margin-bottom:clamp(44px,7vw,72px)}
+  /* ---------- header ----------
+     本文の左端はステップの見出しに合わせる（36px の丸 + 20px の間 = 56px）。
+     ここを 0 に置くと、ページに縦の基準線が2本できて組版が崩れて見える。 */
+  .masthead{margin-bottom:clamp(48px,7vw,72px);padding-left:56px}
   .kicker{
-    font-size:12px;
-    letter-spacing:.18em;
-    color:var(--ink-3);
-    margin:0 0 18px;
+    font-size:13px;
+    letter-spacing:.16em;
+    line-height:1.6;
+    color:var(--ink-2);
+    margin:0 0 12px;
   }
   h1{
     margin:0;
-    font-size:clamp(30px,5.2vw,42px);
-    line-height:1.3;
+    font-size:clamp(30px,5.2vw,40px);
+    line-height:1.35;
     font-weight:700;
-    letter-spacing:-.01em;
     text-wrap:balance;
   }
   .masthead p{
-    margin:18px 0 0;
+    margin:16px 0 0;
     color:var(--ink-2);
-    font-size:16px;
+    font-size:17px;
+    line-height:1.75;
     max-width:30em;
   }
 
@@ -94,21 +103,23 @@
     display:grid;
     grid-template-columns:36px 1fr;
     column-gap:20px;
-    padding-bottom:clamp(40px,6vw,56px);
+    padding-bottom:clamp(48px,7vw,64px);
   }
+  .step:last-of-type{padding-bottom:0}
+  /* 罫線は下の塊のものとして扱う。上を広く、下を狭く。 */
   .step + .step{
-    border-top:1px solid var(--line);
-    padding-top:clamp(40px,6vw,56px);
+    border-top:1px solid var(--line-strong);
+    padding-top:clamp(36px,5vw,48px);
   }
   .marker{
     width:36px;height:36px;
     border-radius:50%;
     border:1.5px solid var(--line-strong);
-    color:var(--ink-3);
+    color:var(--ink-muted);
     display:flex;align-items:center;justify-content:center;
     font-size:15px;font-weight:700;
     font-variant-numeric:tabular-nums;
-    margin-top:2px;
+    margin-top:4px;
     transition:border-color .2s,color .2s,background .2s;
   }
   .step[data-state="active"] .marker{
@@ -116,62 +127,87 @@
     background:var(--accent);
     color:var(--ground);
   }
+  /* 済んだ塊。塗りの「いま」と、灰色の「まだ」の、どちらとも別の見た目にする。
+     ここを書き忘れると、済んだ番号が「まだ使えない番号」と同じ絵になる。 */
+  .step[data-state="done"] .marker{
+    border-color:var(--accent);
+    background:transparent;
+    color:var(--accent);
+    font-size:0;
+  }
+  .step[data-state="done"] .marker::after{content:"\2713";font-size:19px;line-height:1}
   @media (prefers-color-scheme: dark){
     .step[data-state="active"] .marker{color:#0B1B19}
   }
   .step h2{
     margin:4px 0 0;
-    font-size:20px;
-    line-height:1.6;
+    font-size:21px;
+    line-height:1.55;
     font-weight:700;
     letter-spacing:-.005em;
   }
   .step .body{min-width:0}
-  .step[data-state="waiting"] .body > *:not(h2){opacity:.4}
+
+  /* まだ使えない塊。opacity で一括に薄くすると、読み込み失敗に見える。
+     色を明示して「読めるが、まだ押せない」にする。見出しだけ濃く残さない。 */
   .step[data-state="waiting"] .body{pointer-events:none}
-  .lede{margin:10px 0 0;color:var(--ink-2);font-size:15.5px}
+  .step[data-state="waiting"] h2,
+  .step[data-state="waiting"] .paste{color:var(--ink-muted)}
+  .step[data-state="waiting"] .paste{background:var(--surface);border-color:var(--line)}
+  .step[data-state="waiting"] .btn{
+    background:transparent;
+    border-color:var(--line-strong);
+    color:var(--ink-muted);
+    font-weight:500;
+  }
+  .lede{margin:20px 0 0;color:var(--ink-2);font-size:15px;line-height:1.75}
+  /* なぜまだ使えないのかを、読める濃さで言う。 */
+  .locked{margin:20px 0 0;color:var(--ink-2);font-size:15px;line-height:1.75;display:none}
+  .step[data-state="waiting"] .locked{display:block}
+  .step[data-state="waiting"] .lede{display:none}
 
   /* ---------- input ---------- */
-  .field{margin-top:22px}
+  .field{margin-top:32px}
   label{
     display:block;
     font-size:13px;
     font-weight:700;
+    line-height:1.4;
     letter-spacing:.04em;
     color:var(--ink-2);
-    margin-bottom:10px;
+    margin-bottom:8px;
   }
   textarea{
     display:block;
     width:100%;
-    min-height:190px;
-    padding:20px 22px;
+    min-height:192px;
+    padding:16px 20px;
     font-family:inherit;
     font-size:17px;
     line-height:1.9;
     color:var(--ink);
-    background:var(--surface);
-    border:1.5px solid var(--line);
+    background:var(--ground);
+    border:1.5px solid var(--field-line);
     border-radius:var(--radius);
     resize:vertical;
-    transition:border-color .15s,background .15s;
+    transition:border-color .15s,box-shadow .15s;
   }
-  textarea::placeholder{color:var(--ink-3);opacity:1}
-  textarea:hover{border-color:var(--line-strong)}
-  textarea:focus{outline:none;border-color:var(--accent);background:var(--ground)}
+  textarea::placeholder{color:var(--ink-2);opacity:1}
+  textarea:hover{border-color:var(--ink-2)}
+  textarea:focus{outline:none;border-color:var(--accent)}
   textarea:focus-visible{box-shadow:0 0 0 4px var(--accent-soft)}
 
-  .examples{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;align-items:center}
-  .examples .cap{font-size:13px;color:var(--ink-3)}
+  .cap{margin:16px 0 8px;font-size:13px;line-height:1.6;color:var(--ink-2)}
+  .examples{display:flex;flex-wrap:wrap;gap:12px}
   .chip{
     font-family:inherit;
-    font-size:14px;
+    font-size:15px;
     color:var(--ink-2);
-    background:transparent;
-    border:1.5px solid var(--line-strong);
-    border-radius:999px;
-    padding:9px 16px;
-    min-height:40px;
+    background:var(--surface);
+    border:1px solid var(--line-strong);
+    border-radius:8px;
+    padding:0 16px;
+    min-height:44px;
     cursor:pointer;
     transition:color .15s,border-color .15s,background .15s;
   }
@@ -180,7 +216,7 @@
   .alert{
     display:none;
     margin-top:16px;
-    padding:12px 16px;
+    padding:12px 16px 12px 19px;
     border-left:3px solid var(--stop);
     background:var(--surface);
     color:var(--stop);
@@ -190,9 +226,23 @@
   }
   .alert.on{display:block}
 
+  /* 押した結果を、画面の中で言う。ダウンロードの通知はブラウザ任せにしない。 */
+  .saved{
+    margin:24px 0 0;
+    padding:12px 16px 12px 19px;
+    border-left:3px solid var(--accent);
+    background:var(--accent-soft);
+    color:var(--ink);
+    font-size:15px;
+    line-height:1.7;
+    border-radius:0 6px 6px 0;
+  }
+  .saved[hidden]{display:none}
+
   /* ---------- actions ---------- */
-  .actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:26px}
+  .actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:32px}
   .btn{
+    display:inline-flex;align-items:center;justify-content:center;
     font-family:inherit;
     font-size:16px;
     font-weight:700;
@@ -206,38 +256,46 @@
     transition:background .15s,border-color .15s,color .15s;
   }
   @media (prefers-color-scheme: dark){ .btn{color:#0B1B19} }
-  .btn:hover{background:var(--accent-hover);border-color:var(--accent-hover)}
+  .btn:hover:not(:disabled){background:var(--accent-hover);border-color:var(--accent-hover)}
+  .btn:disabled{cursor:default}
   .btn.quiet{
     background:transparent;
     color:var(--ink-2);
     border-color:var(--line-strong);
     font-weight:500;
   }
-  .btn.quiet:hover{color:var(--ink);border-color:var(--ink-2);background:transparent}
+  .btn.quiet:hover:not(:disabled){color:var(--ink);border-color:var(--ink-2);background:transparent}
   :focus-visible{outline:2.5px solid var(--focus);outline-offset:3px}
-  .note{font-size:13.5px;color:var(--ink-3)}
+  .note{font-size:15px;line-height:1.6;color:var(--ink-2);margin-left:8px}
 
   /* ---------- paste box ---------- */
   .paste{
-    margin-top:20px;
+    margin-top:32px;
     background:var(--surface);
     border:1.5px solid var(--line);
     border-radius:var(--radius);
-    padding:20px 22px;
+    padding:18px 20px;
     font-family:var(--mono);
-    font-size:14.5px;
-    line-height:2;
+    font-size:15px;
+    line-height:1.8;
     color:var(--ink);
     white-space:pre-wrap;
     word-break:break-word;
+    text-wrap:pretty;
   }
   .step[data-state="active"] .paste{border-color:var(--accent);background:var(--accent-soft)}
+  /* ボタンは、そのすぐ上の箱を操作するもの。上の説明文より近くに置く。 */
+  .paste + .actions{margin-top:16px}
 
   @media (max-width:520px){
-    .step{grid-template-columns:1fr;row-gap:14px}
-    .marker{margin-bottom:2px}
+    .masthead{padding-left:0}
+    .step{grid-template-columns:1fr;row-gap:8px}
+    .step h2{font-size:19px}
+    .marker{width:28px;height:28px;font-size:13px;margin-top:0}
+    .step[data-state="done"] .marker::after{font-size:15px}
     .btn{width:100%}
-    .actions{gap:10px}
+    .btn.quiet{width:auto;align-self:flex-start;min-height:44px;padding:0 20px}
+    .note{margin-left:0;flex-basis:100%}
   }
 </style>
 </head>
@@ -254,16 +312,16 @@
     <div class="marker">1</div>
     <div class="body">
       <h2>作りたいことを書く</h2>
-      <p class="lede">誰が使って、その人の何が良くなるとうれしいか。それだけで足ります。<br>減らしたいこと、増やしたいこと、まだ無いもの。どれでもかまいません。</p>
+      <p class="lede">誰が使って、その人の何が良くなるとうれしいか。それだけで足ります。減らしたいこと、増やしたいこと、まだ無いもの。どれでもかまいません。</p>
 
       <div class="field">
         <label for="wish">作りたいもの</label>
         <textarea id="wish" aria-describedby="err"
-          placeholder="例）うちの美容室の予約を、電話じゃなくてネットで受けたい。&#10;今は営業中に電話が鳴って、そのたびに手が止まる。"></textarea>
+          placeholder="例）うちの美容室の予約を、電話じゃなくてネットで受けたい。"></textarea>
       </div>
 
-      <div class="examples">
-        <span class="cap">例を入れる</span>
+      <p class="cap" id="cap">例文を入れる（いま書いた内容は置き換わります）</p>
+      <div class="examples" aria-describedby="cap">
         <button class="chip" type="button" data-fill="うちの美容室の予約を、電話じゃなくてネットで受けたい。今は営業中に電話が鳴って手が止まる。">手間を減らしたい</button>
         <button class="chip" type="button" data-fill="作った器の写真を並べて、気に入った人がそのまま問い合わせできるページがほしい。今は見てもらう場所が無い。">見てもらいたい</button>
         <button class="chip" type="button" data-fill="シフト表を作るときに、人数が足りない日を自動で赤く出したい。今は目で数えていて、たまに見落とす。">間違いを無くしたい</button>
@@ -273,22 +331,25 @@
 
       <div class="actions">
         <button class="btn" id="go" type="button">確定</button>
-        <span class="note">押すと、指示書が1枚ダウンロードされます</span>
+        <span class="note" id="note">押すと、指示書が1枚ダウンロードされます</span>
       </div>
+
+      <p class="saved" id="saved" role="status" aria-live="polite" hidden></p>
     </div>
   </section>
 
   <section class="step" id="step2" data-state="waiting">
     <div class="marker">2</div>
     <div class="body">
-      <h2>AIのチャット欄に貼り付けてください</h2>
+      <h2 id="step2h" tabindex="-1">AIのチャット欄に貼り付けてください</h2>
+      <p class="locked">上の「確定」を押すと、ここが使えるようになります。</p>
       <p class="lede">下の文をコピーして、お使いのAIにそのまま貼り付けます。</p>
 
       <div class="paste" id="say">新しい空のフォルダを作って、そこで作業してください。いま落とした「shitaku.md」を読んで、書いてあるとおりに進めてください。</div>
 
       <div class="actions">
-        <button class="btn" id="copy" type="button">コピー</button>
-        <button class="btn quiet" id="again" type="button">やり直す</button>
+        <button class="btn" id="copy" type="button" disabled>コピー</button>
+        <button class="btn quiet" id="again" type="button" disabled>やり直す</button>
       </div>
     </div>
   </section>
@@ -307,6 +368,11 @@
   var step1 = document.getElementById('step1');
   var step2 = document.getElementById('step2');
   var kicker = document.querySelector('.kicker');
+  var saved = document.getElementById('saved');
+  var note = document.getElementById('note');
+  var copyBtn = document.getElementById('copy');
+  var againBtn = document.getElementById('again');
+  var step2h = document.getElementById('step2h');
 
   function buildMarkdown(text) {
     return [
@@ -404,6 +470,10 @@
 
   Array.prototype.forEach.call(document.querySelectorAll('.chip'), function (c) {
     c.addEventListener('click', function () {
+      // 書いたものを黙って消さない。消えるのは、消してよいと言われたときだけ。
+      if (wish.value.trim() !== '' && !window.confirm('いま書いた内容を、例文に置き換えます。よろしいですか？')) {
+        return;
+      }
       wish.value = c.getAttribute('data-fill');
       err.classList.remove('on');
       wish.focus();
@@ -422,13 +492,24 @@
     step1.setAttribute('data-state', 'done');
     step2.setAttribute('data-state', 'active');
     kicker.textContent = 'STEP 2 / 2';
+    // 起きたことを画面の中で言う。ブラウザの通知が出ない設定でも伝わるように。
+    saved.textContent = 'shitaku.md を保存しました。ダウンロードのフォルダに入っています。';
+    saved.hidden = false;
+    note.hidden = true;
+    copyBtn.disabled = false;
+    againBtn.disabled = false;
     step2.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    step2h.focus({ preventScroll: true });
   });
 
   document.getElementById('again').addEventListener('click', function () {
     step2.setAttribute('data-state', 'waiting');
     step1.setAttribute('data-state', 'active');
     kicker.textContent = 'STEP 1 / 2';
+    saved.hidden = true;
+    note.hidden = false;
+    copyBtn.disabled = true;
+    againBtn.disabled = true;
     wish.value = '';
     step1.scrollIntoView({ behavior: 'smooth', block: 'start' });
     wish.focus();
@@ -436,10 +517,10 @@
 
   document.getElementById('copy').addEventListener('click', function () {
     var t = document.getElementById('say').textContent;
-    var btn = this;
     function done() {
-      btn.textContent = 'コピーしました';
-      setTimeout(function () { btn.textContent = 'コピー'; }, 1800);
+      // ボタンの文字を差し替えると幅が動き、隣のボタンがずれる。別の場所に出す。
+      saved.textContent = 'コピーしました。AIのチャット欄に貼り付けてください。';
+      saved.hidden = false;
     }
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) {

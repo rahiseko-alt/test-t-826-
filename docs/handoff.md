@@ -104,4 +104,16 @@ Gate 2（`prompts/drift-detector.md` の7問）も、`project-intake` 追加分�
     bash scripts/check-catastrophic.sh
     bash scripts/check-test-integrity.sh origin/main
 
+### 画面を変えたら見るもの（目視の観点。決めておかないと気づける物しか見つからない）
+
+1. 状態が変わる要素すべてに、**その状態専用の見た目**があるか
+2. 押した結果が、**押した場所の近くに**、消えずに出るか
+3. 使えない状態が、**壊れて見えない**か（色を明示しているか。`opacity` で薄めていないか）
+4. 余白が 4 の倍数のみか。**行間より margin が小さい箇所が無いか**
+5. 押せない部品に `disabled` が付いているか
+6. 375px 幅と暗い配色でも壊れないか
+
+（`docs/failures.md` F-20260827-10。「描画して確認した」の中身を決めていなかったために、
+`data-state="done"` にCSSが1つも無い状態を見落とした）
+
 `build-kit.sh` は同じ中身なら毎回同じ値を返す。値が変わったら中身が変わったということ。
