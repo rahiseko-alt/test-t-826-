@@ -93,7 +93,13 @@ else
 fi
 
 # --- 4. 画面へ埋める -----------------------------------------------------
+# 置き場が渡されていれば、取得先のURLもそこへ向ける。
 INDEX="$ROOT/index.html"
+if [ -n "${KIT_BASE_URL:-}" ]; then
+  TMPU="$STAGE/index.url.html"
+  sed "s|var KIT_URL = '[^']*';|var KIT_URL = '${KIT_BASE_URL%/}/kit/shitaku-kit.tar.gz';|" "$INDEX" > "$TMPU"
+  cp "$TMPU" "$INDEX"
+fi
 if ! grep -q "var KIT_SHA256 = '" "$INDEX"; then
   echo "要対応: index.html に KIT_SHA256 の行が見つかりません。" >&2
   exit 1
