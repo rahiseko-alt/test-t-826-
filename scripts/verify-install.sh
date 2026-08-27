@@ -40,6 +40,9 @@ prompts/drift-detector.md
 scripts/check-test-integrity.sh
 scripts/check-catastrophic.sh
 templates/e2e/acceptance.spec.ts
+.agents/skills/session-checkin/SKILL.md
+.agents/skills/project-spec/SKILL.md
+.agents/skills/verified-plan/SKILL.md
 "
 
 PROBLEMS=""
@@ -72,15 +75,14 @@ if [ -s "$ROOT/AGENTS.md" ]; then
   fi
 fi
 
-echo "--- 開発のしたく / 置けたかの確認 ---"
-echo "対象: $ROOT"
-echo "確認したもの: ${OK} / ${COUNT}"
-echo
-
+# 1行目は必ず判定。見出しや対象パスを先に出すと、利用者が最初に読む行が
+# 判定でなくなる（spec.md 第2節 A-5 が赤になる）。ここへ何かを足さないこと。
 if [ -z "$PROBLEMS" ]; then
   echo "問題なし"
   echo
   echo "一式は揃っています。このまま開発を始められます。"
+  echo
+  echo "（確認したもの ${OK} / ${COUNT}  場所 $ROOT）"
   exit 0
 fi
 
@@ -91,4 +93,6 @@ echo "$PROBLEMS"
 echo "取得か展開が途中で終わっている可能性があります。"
 echo "もう一度、指示書の手順1からやり直してください。"
 echo "この状態で作業を進めてはいけません。"
+echo
+echo "（確認したもの ${OK} / ${COUNT}  場所 $ROOT）"
 exit 1
