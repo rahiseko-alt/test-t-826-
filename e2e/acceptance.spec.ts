@@ -355,6 +355,8 @@ test.describe.serial('受入検査（1回のブラウザ起動に束ねる）', 
     expect(body1).toMatch(/[0-9a-f]{64}/);              // 照合に使う正解のハッシュ値
     expect(body1).toMatch(/上書き/);                     // 上書きを禁じる指示
     expect(body1).toMatch(/空のフォルダ/);                // 空のフォルダで始めさせる指示
+    expect(body1).toMatch(/verify-install\.sh/);         // 置けたか確かめる手順
+    expect(body1).toMatch(/飛ばして/);                    // その手順を飛ばさせない指示
     await expect(page.getByText('次にAIへこう言ってください')).toBeVisible();
     await expect(page.getByRole('button', { name: 'コピー' })).toBeVisible();
     // [転写3 ここまで]
