@@ -1,0 +1,11 @@
+{
+  "name": "shitaku",
+  "private": true,
+  "scripts": {
+    "serve": "python3 -m http.server 3000",
+    "e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0"
+  }
+}
