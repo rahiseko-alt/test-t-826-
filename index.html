@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>開発のしたく</title>
+<title>初期ヒアリング</title>
 <!-- 外部のフォントや script に依存しない。ネットが制限されたパソコンでも
      そのまま開けるようにするため、この1枚だけで完結させる。 -->
 <style>
@@ -64,7 +64,7 @@
 <body>
 <div class="wrap">
 
-  <h1>開発のしたく</h1>
+  <h1>初期ヒアリング</h1>
   <p class="lede">作りたいことを数行書くと、AIに渡す指示書が1枚できます。あとはそれをAIに読ませるだけです。</p>
 
   <div id="form">
@@ -78,25 +78,20 @@
     </div>
     <p id="err" class="error" hidden>何を作りたいか、数行書いてください。</p>
     <div class="row">
-      <button class="btn" id="go" type="button">用意する</button>
+      <button class="btn" id="go" type="button">確定</button>
       <span class="hint">保存先は聞かれません。そのままダウンロードされます</span>
     </div>
   </div>
 
   <div id="done" class="done" hidden>
-    <div class="file">
-      <span aria-hidden="true">📄</span>
-      <div>
-        <div class="nm" id="fname">shitaku.md</div>
-        <div class="st">ダウンロードしました。フォルダも圧縮ファイルもありません。これ1枚だけです</div>
-      </div>
-    </div>
+    <p class="lede" style="margin:0 0 20px">下の文をコピーして、AIのチャット欄に貼り付けてください。</p>
     <div class="say">
-      <h2>次にAIへこう言ってください</h2>
       <p id="say">新しい空のフォルダを作って、そこで作業してください。いま落とした「shitaku.md」を読んで、書いてあるとおりに進めてください。</p>
-      <div class="foot"><button class="btn ghost" id="copy" type="button">コピー</button></div>
     </div>
-    <div class="row"><button class="btn ghost" id="again" type="button">もう一度つくる</button></div>
+    <div class="row">
+      <button class="btn" id="copy" type="button">コピー</button>
+      <button class="btn ghost" id="again" type="button">やり直す</button>
+    </div>
   </div>
 
 </div>
@@ -111,16 +106,15 @@
   // 取得物と一緒に届く値ではない（spec.md 第3節）。
   // ---------------------------------------------------------------------
   var KIT_URL = 'https://rahiseko-alt.github.io/test-t-826-/kit/shitaku-kit.tar.gz';
-  var KIT_SHA256 = '8b73112a05c27d728da64938a743dbe726a4d18160b44b88fd87a7987124c91c';
+  var KIT_SHA256 = '3e73dd8d2900a3c5295148ed3c98a57354a84fad3d52b2a29e0436fd4f20f8a8';
 
   var wish = document.getElementById('wish');
   var err = document.getElementById('err');
-  var form = document.getElementById('form');
   var done = document.getElementById('done');
 
   function buildMarkdown(text) {
     return [
-      '# したく — AIへの指示書',
+      '# 初期ヒアリング — AIへの指示書',
       '',
       'このファイルは、非エンジニアの利用者が受け取ったものです。',
       'あなた（AI）はこれを読み、下の手順どおりに進めてください。',
@@ -228,13 +222,11 @@
     }
     err.hidden = true;
     download(buildMarkdown(text));
-    form.hidden = true;
     done.hidden = false;
   });
 
   document.getElementById('again').addEventListener('click', function () {
     done.hidden = true;
-    form.hidden = false;
     wish.value = '';
     wish.focus();
   });
