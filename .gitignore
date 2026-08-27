@@ -8,3 +8,7 @@ build/
 playwright-report/
 test-results/
 .claude/settings.local.json
+
+# npm
+node_modules/
+dist/

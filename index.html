@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>開発のしたく</title>
+<!-- 外部のフォントや script に依存しない。ネットが制限されたパソコンでも
+     そのまま開けるようにするため、この1枚だけで完結させる。 -->
+<style>
+  :root{
+    --paper:#F7F5F0; --surface:#FFFFFF; --surface-2:#F1EEE8;
+    --ink:#16212B; --ink-soft:#5A6672; --ink-faint:#8A939C;
+    --line:#DFDAD1; --ai:#23486B; --ai-tint:#E7EDF4;
+    --go:#3B7A5C; --go-tint:#E4F0EA; --stop:#B03E2E;
+    --display:"Hiragino Mincho ProN","Yu Mincho","YuMincho","Noto Serif JP",serif;
+    --body:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",system-ui,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#14171A; --surface:#1B1F24; --surface-2:#22272D;
+      --ink:#ECE7DE; --ink-soft:#9AA4AE; --ink-faint:#727C86;
+      --line:#2C333A; --ai:#8CB2DA; --ai-tint:#1D2938;
+      --go:#78BC96; --go-tint:#18261F; --stop:#E47966;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.85}
+  .wrap{max-width:720px;margin:0 auto;padding:64px 20px 96px}
+  h1{font-family:var(--display);font-size:clamp(32px,6vw,46px);margin:0;line-height:1.2}
+  .lede{color:var(--ink-soft);margin:16px 0 40px}
+  label{display:block;font-weight:700;margin-bottom:10px}
+  .help{color:var(--ink-faint);font-size:14px;font-weight:400;margin-bottom:12px}
+  textarea{width:100%;min-height:130px;padding:16px 18px;font-family:var(--body);font-size:16px;
+    line-height:1.8;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:4px;resize:vertical}
+  textarea:focus-visible,button:focus-visible{outline:2px solid var(--ai);outline-offset:2px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+  .chips span{font-size:13px;color:var(--ink-faint);align-self:center}
+  .chip{font-family:var(--body);font-size:13.5px;color:var(--ink-soft);cursor:pointer;
+    background:var(--surface-2);border:1px solid var(--line);border-radius:99px;padding:6px 14px}
+  .chip:hover{border-color:var(--ai);color:var(--ai)}
+  .row{display:flex;align-items:center;gap:16px;margin-top:26px;flex-wrap:wrap}
+  .btn{font-family:var(--body);font-weight:700;font-size:15px;cursor:pointer;background:var(--ai);
+    color:#fff;border:1px solid var(--ai);border-radius:4px;padding:12px 28px}
+  @media (prefers-color-scheme: dark){.btn{color:#0F1519}}
+  .btn:hover{opacity:.86}
+  .btn.ghost{background:transparent;color:var(--ink-soft);border-color:var(--line);font-weight:400}
+  .btn.ghost:hover{color:var(--ink);border-color:var(--ink-soft)}
+  .hint{font-size:13px;color:var(--ink-faint)}
+  .error{color:var(--stop);font-weight:700;margin-top:14px}
+  .done{margin-top:40px;border-top:1px solid var(--line);padding-top:32px}
+  .file{display:flex;align-items:center;gap:14px;padding:16px 18px;border:1px solid var(--go);
+    background:var(--go-tint);border-radius:5px}
+  .file .nm{font-family:var(--mono);font-size:14px}
+  .file .st{font-size:13px;color:var(--ink-soft)}
+  .say{margin-top:24px;border:1px solid var(--ai);border-radius:5px;overflow:hidden}
+  .say h2{margin:0;background:var(--ai-tint);color:var(--ai);font-size:14px;font-family:var(--body);
+    padding:10px 16px;border-bottom:1px solid var(--ai)}
+  .say p{margin:0;padding:16px 18px;font-family:var(--mono);font-size:13.5px;line-height:1.95}
+  .say .foot{display:flex;justify-content:flex-end;padding:0 14px 14px}
+  [hidden]{display:none !important}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>開発のしたく</h1>
+  <p class="lede">作りたいことを数行書くと、AIに渡す指示書が1枚できます。あとはそれをAIに読ませるだけです。</p>
+
+  <div id="form">
+    <label for="wish">作りたいもの</label>
+    <p class="help">思いついたままで大丈夫です。誰が使って、その人のどんな手間が減るとうれしいか。それだけ入っていれば足ります。</p>
+    <textarea id="wish" aria-describedby="err"></textarea>
+    <div class="chips">
+      <span>たとえば</span>
+      <button class="chip" type="button" data-fill="うちの美容室の予約を、電話じゃなくてネットで受けたい。今は営業中に電話が鳴って手が止まる。">予約をネットで受けたい</button>
+      <button class="chip" type="button" data-fill="店長が月末にやっている売上の集計を、画面でぱっと終わらせたい。今はレシートを見ながら電卓を叩いている。">売上の集計を楽にしたい</button>
+    </div>
+    <p id="err" class="error" hidden>何を作りたいか、数行書いてください。</p>
+    <div class="row">
+      <button class="btn" id="go" type="button">用意する</button>
+      <span class="hint">保存先は聞かれません。そのままダウンロードされます</span>
+    </div>
+  </div>
+
+  <div id="done" class="done" hidden>
+    <div class="file">
+      <span aria-hidden="true">📄</span>
+      <div>
+        <div class="nm" id="fname">shitaku.md</div>
+        <div class="st">ダウンロードしました。フォルダも圧縮ファイルもありません。これ1枚だけです</div>
+      </div>
+    </div>
+    <div class="say">
+      <h2>次にAIへこう言ってください</h2>
+      <p id="say">いま落とした「shitaku.md」を読んで、書いてあるとおりに進めてください。</p>
+      <div class="foot"><button class="btn ghost" id="copy" type="button">コピー</button></div>
+    </div>
+    <div class="row"><button class="btn ghost" id="again" type="button">もう一度つくる</button></div>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  // ---------------------------------------------------------------------
+  // リリースのたびに、この2つを実際の値へ差し替える。
+  // KIT_SHA256 は配布する一式の SHA-256。ここが正解の値であり、
+  // 取得物と一緒に届く値ではない（spec.md 第3節）。
+  // ---------------------------------------------------------------------
+  var KIT_URL = 'https://rahiseko-alt.github.io/test-t-826-/kit/shitaku-kit.tar.gz';
+  var KIT_SHA256 = 'daa7ed24e3e3171fb9fce502ef815e49a69d3ce42e78f95f1ca19572e885ca73';
+
+  var wish = document.getElementById('wish');
+  var err = document.getElementById('err');
+  var form = document.getElementById('form');
+  var done = document.getElementById('done');
+
+  function buildMarkdown(text) {
+    return [
+      '# したく — AIへの指示書',
+      '',
+      'このファイルは、非エンジニアの利用者が受け取ったものです。',
+      'あなた（AI）はこれを読み、下の手順どおりに進めてください。',
+      '',
+      '## 作りたいもの',
+      '',
+      text,
+      '',
+      '## 手順',
+      '',
+      '### 1. 一式を取得する',
+      '',
+      '    curl -fsSL ' + KIT_URL + ' -o shitaku-kit.tar.gz',
+      '',
+      '### 2. 取得したものを照合する',
+      '',
+      '**中身をあなたが書いてはいけません。書き写してもいけません。**',
+      '取ってきたものが正しいかどうかは、あなたの判断ではなく、ハッシュ値の一致で決めます。',
+      '',
+      '    macOS / Linux :  shasum -a 256 shitaku-kit.tar.gz',
+      '    Windows       :  certutil -hashfile shitaku-kit.tar.gz SHA256',
+      '',
+      '正解の値:',
+      '',
+      '    ' + KIT_SHA256,
+      '',
+      '**一致しなければ、ファイルを1つも置かずに中止してください。**',
+      'そのうえで「取得したものが壊れていたので中止しました」と利用者に伝えてください。',
+      '「たぶん大丈夫」で先に進んではいけません。',
+      '',
+      '### 3. 展開する',
+      '',
+      '    tar -xzf shitaku-kit.tar.gz',
+      '',
+      '**展開先に同じ名前のファイルやフォルダが既にある場合、上書きしてはいけません。**',
+      'その場で止めて、利用者に確認してください。既存のものを消すことも変えることもしません。',
+      '',
+      '### 4. 正しく置けたか確かめる',
+      '',
+      '    bash scripts/verify-install.sh',
+      '',
+      'この出力をそのまま利用者に見せてください。',
+      '**合格でなければ「できました」と言ってはいけません。**',
+      '',
+      '## 以降の進め方',
+      '',
+      '展開された AGENTS.md を読み、そこに書かれたルールに従ってください。',
+      '上の「作りたいもの」は spec.md に転記され、そこがこの案件の芯になります。',
+      ''
+    ].join('\n');
+  }
+
+  function download(text) {
+    var blob = new Blob([text], { type: 'text/markdown;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'shitaku.md';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll('.chip'), function (c) {
+    c.addEventListener('click', function () {
+      wish.value = c.getAttribute('data-fill');
+      err.hidden = true;
+      wish.focus();
+    });
+  });
+
+  document.getElementById('go').addEventListener('click', function () {
+    var text = wish.value.trim();
+    if (text === '') {          // B-4: 空のまま配らない
+      err.hidden = false;
+      wish.focus();
+      return;
+    }
+    err.hidden = true;
+    download(buildMarkdown(text));
+    form.hidden = true;
+    done.hidden = false;
+  });
+
+  document.getElementById('again').addEventListener('click', function () {
+    done.hidden = true;
+    form.hidden = false;
+    wish.value = '';
+    wish.focus();
+  });
+
+  document.getElementById('copy').addEventListener('click', function () {
+    var t = document.getElementById('say').textContent;
+    var btn = this;
+    function ok() {
+      btn.textContent = 'コピーしました';
+      setTimeout(function () { btn.textContent = 'コピー'; }, 1600);
+    }
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(t).then(ok, ok);
+      } else { ok(); }
+    } catch (e) { ok(); }
+  });
+})();
+</script>
+</body>
+</html>
