@@ -257,12 +257,15 @@ EXPLORE  -->  BUILD  -->  VERIFY
 
 #### D-1. この案件のゴールは `spec.md` 1枚で固定する (Acceptance-First)
 - 着手時に [`spec.md`](./spec.md) を埋め、門①で二択1回だけ確認して確定する。手順は [`project-spec` スキル](./.agents/skills/project-spec/SKILL.md)。spec が固定するのは**検収の下限であって期待値の上限ではない**。期待値が動いたら第1〜4節を更新する。
+- 依頼文がまだ無い状態で始まった場合だけ、[`project-intake` スキル](./.agents/skills/project-intake/SKILL.md) で1回尋ねてから上に入る。尋ねるのは1案件に1回で、状態報告より先に置く。
 - **第2節の検収条件がそのまま E2E のハッピーパスになる**（[`templates/e2e/`](./templates/e2e/README.md)）。検査は [`scripts/check-test-integrity.sh`](./scripts/check-test-integrity.sh) と [`scripts/check-catastrophic.sh`](./scripts/check-catastrophic.sh)。CI 雛形は [`templates/ci/acceptance.yml`](./templates/ci/acceptance.yml)。
 
 #### D-2. コミュニケーション規約 (Communication Protocol) — 永続指示
 - **丁寧な言葉遣いを標準とする。** 断定的・命令的・ぶっきらぼうな口調を用いない。
 - **比喩・たとえ話・回りくどい言い換えを禁止する。** 技術的な事象は**技術用語のまま、正確に**記述し、必要なら定義を添える。
 - 曖昧な要約で誤魔化さず、事実・推測・提案を明確に区別して述べる。
+- **説明・解説は3行以内に収める。** 背景・理由・経緯を並べない。結論と、次にやることだけを書く。長い説明は、読む手間を案件数だけ増やす。
+- **利用者に二者択一を求めるときは、必ず「〜でよろしいですか？」と「Yes/No」の2行で終える。** 「そう／違う」等に言い換えない。答え方が毎回変わると、利用者は何と答えればよいかを毎回考えることになる。
 
 #### D-3. 失敗の記録 (Failure Log)
 - 作業中に発生し解決した失敗は [`docs/failures.md`](./docs/failures.md) の末尾に追記する (Append-Only)。過去の記録を書き換えない。

@@ -21,6 +21,7 @@ description: >-
 3. **`git status` / `git branch` で現在地を確認する。**
 4. **次にやることに着手する。** 手が止まる要因が実際に出たときだけユーザーに上げる。
    - 新しい案件を始める場合は [`project-spec` スキル](../project-spec/SKILL.md) に従い、`spec.md` を確定させてから実装に入る（AGENTS.md D-1）。
+   - **依頼文がどこにも無い場合**（`spec.md` が雛形のまま・git 履歴にも会話にも依頼が無い）は、その前に [`project-intake` スキル](../project-intake/SKILL.md) で1回だけ尋ねる。ここが唯一の例外であり、それ以外で確認を投げない。
 
 ## 禁止事項 (Do Not)
 - `docs/failures.md` 全文を読み込まない（コンテキスト汚染防止）。必要時に `failure-matcher` で照合する。
